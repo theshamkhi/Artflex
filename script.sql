@@ -28,3 +28,26 @@ CREATE TABLE Articles (
 );
 
 
+-- Insert example data into Users
+INSERT INTO Users (Name, Username, Password, Role)
+VALUES
+('Alice Johnson', 'alicej', '123', 'Admin'),
+('Bob Smith', 'bobsmith', '456', 'Author'),
+('Charlie Brown', 'charlieb', '789', 'Reader');
+
+
+-- Insert example data into Categories
+INSERT INTO Categories (Name)
+VALUES
+('Technology'),
+('Health'),
+('Travel'),
+('Education');
+
+
+-- Insert example data into Articles
+INSERT INTO Articles (AuthorID, CatID, PhotoURL, Title, Content, PubDate, status)
+VALUES
+(2, 1, '', 'The Future of AI', 'Content about AI...', NOW(), 'Approved'),
+(2, 3, '', 'Top 10 Travel Destinations', 'Content about travel...', NOW(), 'Pending'),
+(2, 4, '', 'Benefits of Online Learning', 'Content about education...', NOW(), 'Rejected');
