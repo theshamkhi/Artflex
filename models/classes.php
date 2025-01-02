@@ -26,9 +26,7 @@ class Auth extends DbConnection {
 
             $this->connection->commit();
         } catch (Exception $e) {
-            if ($this->connection->inTransaction()) {
-                $this->connection->rollBack();
-            }
+            $this->connection->rollBack();
             throw new Exception("Registration failed. Please try again.");
         }
     }
@@ -54,4 +52,34 @@ class Auth extends DbConnection {
         }
     }
 }
+
+class User {
+    private $pdo;
+    protected $id;
+    protected $name;
+    protected $username;
+    protected $password;
+    protected $role;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+}
+
+class Admin extends User {
+    public function approveArt(){}
+    public function rejectArt(){}
+    public function createCat(){}
+    public function modifyCat(){}
+    public function deleteCat(){}
+}
+class Reader extends User {
+    public function register(){}
+}
+class Author extends Reader {
+    public function createArt(){}
+    public function modifyArt(){}
+    public function deleteArt(){}
+}
+
 ?>
