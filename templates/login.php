@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user['role'] === 'Reader') {
             header('Location: readerDashboard.php');
-        } else {
+        } else if ($user['role'] === 'Author')  {
             header('Location: authorDashboard.php');
-        }
+        } else header('Location: adminDashboard.php');
         exit();
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
