@@ -3,39 +3,32 @@ require_once '../config/db.php';
 
 class Auth extends DbConnection {
 
-    public function register($username, $password, $name, $phone, $email, $role = 'Member') {
+    public function register($name, $username, $password, $role) {
         try {
-            $this->connection->beginTransaction();
 
-            $role = ($role === 'Admin') ? 'Admin' : 'Member';
+            $allowedRoles = ['Admin', 'Author', 'Reader'];
+            if (!in_array($role, $allowedRoles)) {
+                throw new Exception("Invalid role provided.");
+            }
+
+            $this->connection->beginTransaction();
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-            $sqlUser = "INSERT INTO Users (Username, Password, Role) VALUES (:username, :password, :role)";
+            $sqlUser = "INSERT INTO Users (Name, Username, Password, Role) VALUES (:name, :username, :password, :role)";
             $stmtUser = $this->connection->prepare($sqlUser);
             $stmtUser->execute([
+                ':name' => $name,
                 ':username' => $username,
                 ':password' => $hashedPassword,
                 ':role' => $role
             ]);
 
-            $userId = $this->connection->lastInsertId();
-
-            if ($role === 'Member') {
-                $sqlMember = "INSERT INTO Members (MemberID, Name, Phone, Email) VALUES (:id, :name, :phone, :email)";
-                $stmtMember = $this->connection->prepare($sqlMember);
-                $stmtMember->execute([
-                    ':id' => $userId,
-                    ':name' => $name,
-                    ':phone' => $phone,
-                    ':email' => $email
-                ]);
-            }
-
             $this->connection->commit();
-            return $userId;
         } catch (Exception $e) {
-            $this->connection->rollBack();
+            if ($this->connection->inTransaction()) {
+                $this->connection->rollBack();
+            }
             throw new Exception("Registration failed. Please try again.");
         }
     }
@@ -61,5 +54,4 @@ class Auth extends DbConnection {
         }
     }
 }
-
 ?>

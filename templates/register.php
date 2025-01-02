@@ -8,12 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
     $role = $_POST['role'];
 
     try {
-        $userId = $auth->register($username, $password, $name, $phone, $email, $role);
+        $auth->register($name, $username, $password, $role);
         header('Location: login.php');
         exit();
     } catch (Exception $e) {
@@ -36,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body style="margin: 0;
             padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438');
+            background-image: url('../assets/theatre.jpg');
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;">
@@ -45,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
         <div class="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
             <div class="flex flex-col items-center justify-center w-full h-full relative lg:pr-10" data-aos="fade-right" data-aos-easing="ease-in-sine" data-aos-duration="800">
-                <h1 class="text-9xl text-white font-bold" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">
-                    Objection! Your Honor
+                <h1 class="text-8xl text-white italic font-bold" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">
+                    “Art is never finished, only abandoned.”
                 </h1>
+                <p class="text-4xl text-white" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">~Leonardo da Vinci</p>
             </div>
         </div>
         <div class="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
@@ -66,24 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" name="username" placeholder="Username" required class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"/>
                     </div>
 
-                    <!-- Email -->
-                    <div class="relative">
-                        <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Email</p>
-                        <input type="email" name="email" placeholder="Example123@gmail.com" class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"/>
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="relative">
-                        <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Email</p>
-                        <input type="text" name="phone" placeholder="+000-000-0000" class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"/>
-                    </div>
-
                     <!-- Role -->
                     <div class="relative">
                         <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Role</p>
                         <select name="role" id="role" class="border focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md">
-                            <option value="Member" class="text-gray-400">Member</option>
-                            <option value="Admin" class="text-gray-400">Admin</option>
+                            <option value="Reader" class="text-gray-400">Reader</option>
+                            <option value="Author" class="text-gray-400">Author</option>
                         </select>
                     </div>
 

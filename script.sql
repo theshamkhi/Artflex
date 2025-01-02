@@ -4,9 +4,9 @@ USE Artflex;
 CREATE TABLE Users (
     UserID INT PRIMARY KEY AUTO_INCREMENT,
     Name VARCHAR(255) NOT NULL,
-    Username VARCHAR(100),
-    Password VARCHAR(100),
-    Role ENUM('Admin', 'Author', 'Reader')
+    Username VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Role ENUM('Admin', 'Author', 'Reader') NOT NULL
 );
 
 CREATE TABLE Categories (

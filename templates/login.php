@@ -16,10 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];
 
-        if ($user['role'] === 'Admin') {
-            header('Location: adminDashboard.php');
+        if ($user['role'] === 'Reader') {
+            header('Location: readerDashboard.php');
         } else {
-            header('Location: memberDashboard.php');
+            header('Location: authorDashboard.php');
         }
         exit();
     } catch (Exception $e) {
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body style="margin: 0;
             padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438');
+            background-image: url('../assets/theatre.jpg');
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;">
@@ -52,9 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
         <div class="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
             <div class="flex flex-col items-center justify-center w-full h-full relative lg:pr-10" data-aos="fade-right" data-aos-easing="ease-in-sine" data-aos-duration="800">
-                <h1 class="text-9xl text-white font-bold" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">
-                Unleash Your Potential
+                <h1 class="text-8xl text-white italic font-bold" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">
+                    “Art is never finished, only abandoned.”
                 </h1>
+                <p class="text-4xl text-white" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.75);">~Leonardo da Vinci</p>
             </div>
         </div>
         <div class="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
