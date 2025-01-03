@@ -2,7 +2,7 @@
 require_once '../models/classes.php';
 require_once '../config/db.php';
 
-$auth = new Auth();
+$new = new User();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['role'];
 
     try {
-        $auth->register($name, $username, $password, $role);
+        $new->register($name, $username, $password, $role);
         header('Location: login.php');
         exit();
     } catch (Exception $e) {
