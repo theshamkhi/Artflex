@@ -68,16 +68,11 @@ class User {
     }
 
     public function setUserID($id) {
-        $this->userID = $id;
+        $this->userID = (int)$id;
     }
 
     public function createArt($title, $photoURL, $content, $category) {
         try {
-            // if (!$this->userID) {
-            //     error_log("User ID is not set. Current userID: " . print_r($this->userID, true));
-            //     return "Failed to create article: Author ID is missing.";
-            // }
-    
             $query = "INSERT INTO Articles (AuthorID, CatID, PhotoURL, Title, Content, PubDate, Status) 
                       VALUES (:author_id, :cat_id, :photo_url, :title, :content, :pub_date, :status)";
             $stmt = $this->connection->prepare($query);
@@ -95,20 +90,25 @@ class User {
                 ':status' => $status,
             ]);
     
-            // if ($stmt->rowCount() > 0) {
-            //     return "Article created successfully.";
-            // } else {
-            //     return "Failed to create article: No rows affected.";
-            // }
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return "Failed to create article: " . $e->getMessage();
         }
     }
-
+    public function getAuthorArts() {
+        try {
+            $query = "SELECT * FROM Articles WHERE AuthorID = :author_id";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([':author_id' => $this->userID]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
     public function getAllArts() {
         try {
-            $query = "SELECT * FROM Articles";
+            $query = "SELECT * FROM Articles WHERE status = 'Approved'";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
