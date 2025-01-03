@@ -1,85 +1,131 @@
 <?php
 require_once '../config/db.php';
 
-class Auth extends DbConnection {
+
+class Role {
+    private $role;
+
+    public function __construct($role) {
+        $this->role = $role;
+    }
+
+    public function can($action) {
+        $permissions = [
+            'Admin' => ['approveArt', 'rejectArt', 'createCat', 'deleteCat', 'modifyCat'],
+            'Author' => ['createArt', 'modifyArt', 'deleteArt'],
+            'Reader' => ['readArt']
+        ];
+
+        return in_array($action, $permissions[$this->role]);
+    }
+
+    public function getRole() {
+        return $this->role;
+    }
+}
+
+class User {
+    private $connection;
+    private $userID = null;
+    private $name = null;
+    private $username = null;
+    private $role = null;
+
+    public function __construct() {
+        $db = new DbConnection();
+        $this->connection = $db->getConnection();
+    }
 
     public function register($name, $username, $password, $role) {
         try {
-
-            $allowedRoles = ['Admin', 'Author', 'Reader'];
-            if (!in_array($role, $allowedRoles)) {
-                throw new Exception("Invalid role provided.");
-            }
-
-            $this->connection->beginTransaction();
-
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-            $sqlUser = "INSERT INTO Users (Name, Username, Password, Role) VALUES (:name, :username, :password, :role)";
-            $stmtUser = $this->connection->prepare($sqlUser);
-            $stmtUser->execute([
+            $query = "INSERT INTO users (name, username, password, role) VALUES (:name, :username, :password, :role)";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
                 ':name' => $name,
                 ':username' => $username,
                 ':password' => $hashedPassword,
                 ':role' => $role
             ]);
-
-            $this->connection->commit();
-        } catch (Exception $e) {
-            $this->connection->rollBack();
-            throw new Exception("Registration failed. Please try again.");
+            return true;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
         }
     }
 
     public function login($username, $password) {
         try {
-            $sql = "SELECT UserID, Username, Password, Role FROM Users WHERE Username = :username";
-            $stmt = $this->connection->prepare($sql);
+            $query = "SELECT * FROM users WHERE username = :username";
+            $stmt = $this->connection->prepare($query);
             $stmt->execute([':username' => $username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$user || !password_verify($password, $user['Password'])) {
-                throw new Exception("Login failed. Please check your credentials.");
+            if ($user && password_verify($password, $user['Password'])) {
+                $this->userID = $user['UserID'];
+                $this->name = $user['Name'];
+                $this->username = $user['Username'];
+                $this->role = new Role($user['Role']);
+                return $this;
             }
 
-            return [
-                'id' => $user['UserID'],
-                'username' => $user['Username'],
-                'role' => $user['Role']
-            ];
-        } catch (Exception $e) {
-            throw $e;
+            return null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+    public function getUserID() {
+        return $this->userID;
+    }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    public function getRole() {
+        return $this->role;
+    }
+
+    public function performAction($action) {
+        if ($this->role && $this->role->can($action)) {
+            echo "Action '{$action}' performed successfully.";
+        } else {
+            echo "Permission denied for action '{$action}'.";
         }
     }
 }
 
-class User {
-    private $pdo;
-    protected $id;
-    protected $name;
-    protected $username;
-    protected $password;
-    protected $role;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+class Article {
+    private PDO $connection;
+
+    public function __construct() {
+        $db = new DbConnection();
+        $this->connection = $db->getConnection();
+    }
+
+    public function createArt($authorID, $catID, $title, $content, $photoURL) {
+        try {
+            $query = "INSERT INTO Articles (AuthorID, CatID, Title, Content, PhotoURL, PubDate) 
+                      VALUES (:authorID, :catID, :title, :content, :photoURL, NOW())";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':authorID' => $authorID,
+                ':catID' => $catID,
+                ':title' => $title,
+                ':content' => $content,
+                ':photoURL' => $photoURL
+            ]);
+            return $this->connection->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Error creating article: " . $e->getMessage());
+            return null;
+        }
     }
 }
 
-class Admin extends User {
-    public function approveArt(){}
-    public function rejectArt(){}
-    public function createCat(){}
-    public function modifyCat(){}
-    public function deleteCat(){}
-}
-class Reader extends User {
-    public function register(){}
-}
-class Author extends Reader {
-    public function createArt(){}
-    public function modifyArt(){}
-    public function deleteArt(){}
-}
 
 ?>
+
