@@ -8,10 +8,10 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
     header("Location: login.php");
     exit;
 }
-
 $user = new User();
+$user->setUserID($_SESSION['user_id']);
 
-$articles = $user->getAllArts();
+$articles = $user->getAuthorArts();
 ?>
 <!DOCTYPE html>
 <html lang="en">
