@@ -1,8 +1,9 @@
 <?php
 require_once '../models/classes.php';
-session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start();
+
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -12,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($loggedInUser) {
         $_SESSION['user_id'] = $loggedInUser->getUserID();
         $_SESSION['username'] = $loggedInUser->getUsername();
-        $_SESSION['role'] = $loggedInUser->getRole()->getRole();
+        $_SESSION['role'] = $loggedInUser->getRole();
 
         switch ($_SESSION['role']) {
             case 'Reader':
@@ -29,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     } else {
-        echo "Login failed! Invalid username or password.";
+        header('Location: login.php?error=invalid');
+        exit();
     }
 }
 ?>

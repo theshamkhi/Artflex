@@ -1,3 +1,43 @@
+<?php
+require_once '../config/db.php';
+require_once '../models/classes.php';
+
+session_start();
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'Author') {
+    header("Location: login.php");
+    exit;
+}
+
+$user = new User();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $title = $_POST['title'];
+  $photo = $_POST['photo'];
+  $content = $_POST['content'];
+  $category = $_POST['category'];
+
+  if (isset($_SESSION['user_id'])) {
+
+    $user->setUserID($_SESSION['user_id']);
+    
+    $result = $user->createArt($title, $photo, $content, $category);
+    echo $result;
+  } else {
+      echo "User is not logged in.";
+  }
+}
+
+$db = new DbConnection();
+$connection = $db->getConnection();
+
+// Fetch categories
+$query = "SELECT CatID, Name FROM Categories";
+$stmt = $connection->prepare($query);
+$stmt->execute();
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,33 +121,22 @@
       </div>
 
       <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
-        <form action="#" class="space-y-4">
+        <form method="POST" class="space-y-4">
+          <div><input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Title" type="text" id="title" name="title"/></div>
+          <div><input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Image URL" type="text" id="photo" name="photo"/></div>
           <div>
-            <input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Title" type="text" id="name"/>
+            <select name="category" id="category" class="w-full rounded-lg border-gray-200 p-3 text-sm">
+              <?php foreach ($categories as $category): ?>
+                  <option value="<?= $category['CatID'] ?>">
+                      <?= $category['Name'] ?>
+                  </option>
+              <?php endforeach; ?>
+            </select>
           </div>
-
           <div>
-            <input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Image URL" type="text" id="name"/>
+            <label class="sr-only" for="content">Content</label>
+            <textarea class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="What are you thinking?" rows="8" id="content" name="content"></textarea>
           </div>
-          
-            <div>
-                <select name="category" id="category" class="w-full rounded-lg border-gray-200 p-3 text-sm">
-                    <option value="">Please select</option>
-                    <option value="JM">Music</option>
-                    <option value="SRV">Cinema</option>
-                    <option value="JH">Jimi Hendrix</option>
-                    <option value="BBK">B.B King</option>
-                    <option value="AK">Albert King</option>
-                    <option value="BG">Buddy Guy</option>
-                    <option value="EC">Eric Clapton</option>
-                </select>
-            </div>
-
-          <div>
-            <label class="sr-only" for="message">Body</label>
-            <textarea class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Body" rows="8" id="message"></textarea>
-          </div>
-
           <div class="mt-4">
             <button type="submit" class="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto">
               Save
