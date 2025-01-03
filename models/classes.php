@@ -105,6 +105,20 @@ class User {
             return "Failed to create article: " . $e->getMessage();
         }
     }
+
+    public function getAllArts() {
+        try {
+            $query = "SELECT * FROM Articles";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+            $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $articles;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 }
 
 ?>
