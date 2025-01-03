@@ -1,29 +1,35 @@
 <?php
 require_once '../models/classes.php';
-require_once '../config/db.php';
-
 session_start();
-
-$auth = new Auth();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    try {
-        $user = $auth->login($username, $password);
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
+    $user = new User();
+    $loggedInUser = $user->login($username, $password);
 
-        if ($user['role'] === 'Reader') {
-            header('Location: readerDashboard.php');
-        } else if ($user['role'] === 'Author')  {
-            header('Location: authorDashboard.php');
-        } else header('Location: adminDashboard.php');
+    if ($loggedInUser) {
+        $_SESSION['user_id'] = $loggedInUser->getUserID();
+        $_SESSION['username'] = $loggedInUser->getUsername();
+        $_SESSION['role'] = $loggedInUser->getRole()->getRole();
+
+        switch ($_SESSION['role']) {
+            case 'Reader':
+                header('Location: readerDashboard.php');
+                break;
+            case 'Author':
+                header('Location: authorDashboard.php');
+                break;
+            case 'Admin':
+                header('Location: adminDashboard.php');
+                break;
+            default:
+                echo "Invalid role.";
+        }
         exit();
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+    } else {
+        echo "Login failed! Invalid username or password.";
     }
 }
 ?>
