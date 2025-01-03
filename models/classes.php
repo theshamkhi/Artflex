@@ -2,34 +2,12 @@
 require_once '../config/db.php';
 
 
-class Role {
-    private $role;
-
-    public function __construct($role) {
-        $this->role = $role;
-    }
-
-    public function can($action) {
-        $permissions = [
-            'Admin' => ['approveArt', 'rejectArt', 'createCat', 'deleteCat', 'modifyCat'],
-            'Author' => ['createArt', 'modifyArt', 'deleteArt'],
-            'Reader' => ['readArt']
-        ];
-
-        return in_array($action, $permissions[$this->role]);
-    }
-
-    public function getRole() {
-        return $this->role;
-    }
-}
-
 class User {
     private $connection;
-    private $userID = null;
-    private $name = null;
-    private $username = null;
-    private $role = null;
+    private $userID;
+    private $name;
+    private $username;
+    private $role;
 
     public function __construct() {
         $db = new DbConnection();
@@ -62,10 +40,11 @@ class User {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['Password'])) {
+                $_SESSION['user_id'] = $user['UserID'];
                 $this->userID = $user['UserID'];
                 $this->name = $user['Name'];
                 $this->username = $user['Username'];
-                $this->role = new Role($user['Role']);
+                $this->role = $user['Role'];
                 return $this;
             }
 
@@ -88,44 +67,45 @@ class User {
         return $this->role;
     }
 
-    public function performAction($action) {
-        if ($this->role && $this->role->can($action)) {
-            echo "Action '{$action}' performed successfully.";
-        } else {
-            echo "Permission denied for action '{$action}'.";
-        }
-    }
-}
-
-
-class Article {
-    private PDO $connection;
-
-    public function __construct() {
-        $db = new DbConnection();
-        $this->connection = $db->getConnection();
+    public function setUserID($id) {
+        $this->userID = $id;
     }
 
-    public function createArt($authorID, $catID, $title, $content, $photoURL) {
+    public function createArt($title, $photoURL, $content, $category) {
         try {
-            $query = "INSERT INTO Articles (AuthorID, CatID, Title, Content, PhotoURL, PubDate) 
-                      VALUES (:authorID, :catID, :title, :content, :photoURL, NOW())";
+            // if (!$this->userID) {
+            //     error_log("User ID is not set. Current userID: " . print_r($this->userID, true));
+            //     return "Failed to create article: Author ID is missing.";
+            // }
+    
+            $query = "INSERT INTO Articles (AuthorID, CatID, PhotoURL, Title, Content, PubDate, Status) 
+                      VALUES (:author_id, :cat_id, :photo_url, :title, :content, :pub_date, :status)";
             $stmt = $this->connection->prepare($query);
+    
+            $pubDate = date('Y-m-d H:i:s');
+            $status = 'pending';
+    
             $stmt->execute([
-                ':authorID' => $authorID,
-                ':catID' => $catID,
+                ':author_id' => $this->userID,
+                ':cat_id' => $category,
+                ':photo_url' => $photoURL,
                 ':title' => $title,
                 ':content' => $content,
-                ':photoURL' => $photoURL
+                ':pub_date' => $pubDate,
+                ':status' => $status,
             ]);
-            return $this->connection->lastInsertId();
+    
+            // if ($stmt->rowCount() > 0) {
+            //     return "Article created successfully.";
+            // } else {
+            //     return "Failed to create article: No rows affected.";
+            // }
         } catch (PDOException $e) {
-            error_log("Error creating article: " . $e->getMessage());
-            return null;
+            error_log($e->getMessage());
+            return "Failed to create article: " . $e->getMessage();
         }
     }
 }
-
 
 ?>
 
