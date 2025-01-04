@@ -79,11 +79,27 @@ $user->setUserID($_SESSION['user_id']);
 </aside>
 
 <!-- Main -->
-<div class="flex-1 ml-0 sm:ml-80 p-8">
-    <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
 
+<div class="mx-auto max-w-screen-xl px-4 py-16 ml-0 sm:ml-80 p-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-lg text-center">
+    <h1 class="text-2xl font-bold sm:text-3xl">Add New Category!</h1>
 
+    <p class="mt-4 text-gray-500">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Et libero nulla eaque error neque
+      ipsa culpa autem, at itaque nostrum!
+    </p>
+  </div>
+
+  <form method="POST" class="mx-auto mb-0 mt-8 max-w-md space-y-4">
+    <div class="relative">
+      <input type="name" class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm" placeholder="Enter Category Name"/>
+    </div>
+    <div class="flex items-center justify-center">
+      <button type="submit" class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">Add</button>
+    </div>
+  </form>
 </div>
+
 
 
 <footer class="bg-gray-100 sm:ml-80">
