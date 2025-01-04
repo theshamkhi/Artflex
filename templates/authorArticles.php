@@ -82,25 +82,24 @@ $articles = $user->getAuthorArts();
 <!-- Main -->
 <div class="flex-1 ml-0 sm:ml-80 p-8">
     <h2 class="text-4xl font-semibold text-black mb-10">All Articles</h2>
-
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
       <?php foreach ($articles as $article): ?>
         <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-            <img src="<?php echo !empty($article['PhotoURL']) ? htmlspecialchars($article['PhotoURL']) : 'default-image.jpg'; ?>" alt="Article Image" class="h-56 w-full object-cover"/>
+            <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
             <div class="bg-white p-4 sm:p-6">
                 <a href="#">
                     <h3 class="mt-0.5 text-lg text-gray-900">
                         <?php echo htmlspecialchars($article['Title']); ?>
                     </h3>
                 </a>
-                <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+                <p class="mt-2 text-sm text-gray-500 break-words">
                     <?php echo htmlspecialchars($article['Content']); ?>
                 </p>
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block text-xs text-gray-500">
+                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-500">
                     <?php echo htmlspecialchars($article['PubDate']); ?>
                 </time>
-                <p class="mt-2 text-sm text-gray-600">
-                    <strong>Status:</strong> <?php echo htmlspecialchars($article['status']); ?>
+                <p class="mt-2 text-sm text-gray-600 italic">
+                  <?php echo htmlspecialchars($article['status']); ?>
                 </p>
             </div>
         </article>

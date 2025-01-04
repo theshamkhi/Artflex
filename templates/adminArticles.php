@@ -101,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_id'], $_POST['act
                         <?php echo htmlspecialchars($article['Title']); ?>
                     </h3>
                 </a>
-                <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+                <p class="mt-2 text-sm text-gray-500 break-words">
                     <?php echo htmlspecialchars($article['Content']); ?>
                 </p>
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block text-xs text-gray-500">
+                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-500">
                     <?php echo htmlspecialchars($article['PubDate']); ?>
                 </time>
                 <div class="flex justify-between">
