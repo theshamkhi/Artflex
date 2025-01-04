@@ -156,6 +156,33 @@ class User {
             return "Failed to create category: " . $e->getMessage();
         }
     }
+    public function getCats() {
+        try {
+            $query = "SELECT * FROM Categories";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $categories;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+    public function deleteCat($catID) {
+        try {
+            $query1 = "UPDATE Articles SET CatID = 4 WHERE CatID = :catID";
+            $stmt1 = $this->connection->prepare($query1);
+            $stmt1->execute([':catID' => $catID]);
+    
+            $query2 = "DELETE FROM Categories WHERE CatID = :catID";
+            $stmt2 = $this->connection->prepare($query2);
+            $stmt2->execute([':catID' => $catID]);
+        } catch (PDOException $e) {
+            throw new Exception("Database error: " . $e->getMessage());
+        }
+    }
+    
 }
 
 ?>
