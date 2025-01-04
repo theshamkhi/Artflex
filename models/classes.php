@@ -106,7 +106,7 @@ class User {
             return [];
         }
     }
-    public function getAllArts() {
+    public function getApprovedArts() {
         try {
             $query = "SELECT * FROM Articles WHERE status = 'Approved'";
             $stmt = $this->connection->prepare($query);
@@ -118,6 +118,28 @@ class User {
             error_log($e->getMessage());
             return [];
         }
+    }
+    public function getArts() {
+        try {
+            $query = "SELECT * FROM Articles";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+            $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $articles;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+    public function updateArtStatus($catID, $action) {
+        $status = ($action === 'approve') ? 'Approved' : 'Rejected';
+        $sql = "UPDATE Articles SET status = :status WHERE CatID = :cat_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            ':status' => $status,
+            ':cat_id' => $catID,
+        ]);
     }
 }
 

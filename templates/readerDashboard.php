@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $user = new User();
 $user->setUserID($_SESSION['user_id']);
 
-$articles = $user->getAllArts();
+$articles = $user->getApprovedArts();
 ?>
 <!DOCTYPE html>
 <html lang="en">
