@@ -12,6 +12,13 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $user = new User();
 $user->setUserID($_SESSION['user_id']);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category'])) {
+  $name = $_POST['category'];
+  $user->addCat($name);
+  header("Location: adminDashboard.php");
+  exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,7 +99,7 @@ $user->setUserID($_SESSION['user_id']);
 
   <form method="POST" class="mx-auto mb-0 mt-8 max-w-md space-y-4">
     <div class="relative">
-      <input type="name" class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm" placeholder="Enter Category Name"/>
+      <input type="text" name="category" class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm" placeholder="Enter Category Name"/>
     </div>
     <div class="flex items-center justify-center">
       <button type="submit" class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">Add</button>

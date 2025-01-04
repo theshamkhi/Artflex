@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_id'], $_POST['act
                         <?php echo htmlspecialchars($article['status']); ?>
                     </p>
                     <form method="POST" action="" class="mt-2 flex space-x-2">
-                    <input type="hidden" name="cat_id" value="<?php echo htmlspecialchars($article['CatID']); ?>">
+                        <input type="hidden" name="cat_id" value="<?php echo htmlspecialchars($article['CatID']); ?>">
                         <button name="action" value="approve" class="text-xl hover:scale-105">✅</button>
                         <button name="action" value="reject" class="text-xl hover:scale-105">❌</button>
                     </form>

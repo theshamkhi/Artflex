@@ -141,6 +141,21 @@ class User {
             ':cat_id' => $catID,
         ]);
     }
+    public function addCat($name) {
+        try {
+            $query = "INSERT INTO Categories (Name) 
+                      VALUES (:name)";
+            $stmt = $this->connection->prepare($query);
+    
+            $stmt->execute([
+                ':name' => $name
+            ]);
+    
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return "Failed to create category: " . $e->getMessage();
+        }
+    }
 }
 
 ?>
