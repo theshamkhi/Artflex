@@ -19,6 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category'])) {
   exit;
 }
 
+$categories = $user->getCats();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+  $catID = $_POST['cat_id'];
+  $user->deleteCat($catID);
+  header("Location: adminDashboard.php");
+  exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,6 +114,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category'])) {
       <button type="submit" class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">Add</button>
     </div>
   </form>
+</div>
+
+<div class="flex-1 ml-0 sm:ml-80 p-8">
+    <h1 class="text-5xl font-semibold text-black mb-10">Categories</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
+      <?php foreach ($categories as $category): ?>
+        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+            <div class="flex justify-between bg-white p-4 sm:p-6">
+                <a href="#">
+                    <h3 class="mt-0.5 text-lg text-gray-900">
+                        <?php echo htmlspecialchars($category['Name']); ?>
+                    </h3>
+                </a>
+                <form method="POST" class="flex space-x-2">
+                  <input type="hidden" name="cat_id" value="<?php echo $category['CatID']; ?>">
+                  <button name="action" value="delete" class="text-xl hover:scale-105">🗑️</button>
+                </form>
+            </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
 </div>
 
 
