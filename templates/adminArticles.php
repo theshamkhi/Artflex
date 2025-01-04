@@ -108,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_id'], $_POST['act
                     <?php echo htmlspecialchars($article['PubDate']); ?>
                 </time>
                 <div class="flex justify-between">
-                    <p class="mt-2 text-sm text-gray-600">
-                        <strong>Status:</strong> <?php echo htmlspecialchars($article['status']); ?>
+                    <p class="mt-2 text-sm text-gray-600 italic">
+                        <?php echo htmlspecialchars($article['status']); ?>
                     </p>
                     <form method="POST" action="" class="mt-2 flex space-x-2">
                     <input type="hidden" name="cat_id" value="<?php echo htmlspecialchars($article['CatID']); ?>">
