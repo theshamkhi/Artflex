@@ -76,7 +76,7 @@ $articles = $user->getApprovedArts();
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
       <?php foreach ($articles as $article): ?>
-        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
             <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
             <div class="bg-white p-4 sm:p-6">
                 <a href="#">
