@@ -12,7 +12,9 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $user = new User();
 $user->setUserID($_SESSION['user_id']);
 
-$articles = $user->getApprovedArts();
+$categories = $user->getCats();
+$selectedCategory = isset($_GET['category']) ? (int)$_GET['category'] : null;
+$articles = $user->getApprovedArts($selectedCategory);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,15 +52,6 @@ $articles = $user->getApprovedArts();
     </div>
         <ul class="space-y-2 font-medium px-3 pb-4">
             <li>
-                <a href="#" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
-                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
-                        <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
-                        <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
-                    </svg>
-                <span class="ms-3">Filtre by</span>
-                </a>
-            </li>
-            <li>
                 <a href="logout.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
                 <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
@@ -73,6 +66,24 @@ $articles = $user->getApprovedArts();
 <!-- Main -->
 <div class="flex-1 ml-0 sm:ml-80 p-8">
     <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
+    <form method="GET" action="" class="mb-6 flex items-center space-x-4">
+        <select 
+            id="category" 
+            name="category" 
+            onchange="this.form.submit()" 
+            class="block w-full max-w-sm px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        >
+            <option value="" class="text-gray-500">All Categories</option>
+            <?php foreach ($categories as $category): ?>
+                <option 
+                    value="<?php echo $category['CatID']; ?>" 
+                    <?php echo (isset($_GET['category']) && $_GET['category'] == $category['CatID']) ? 'selected' : ''; ?>
+                >
+                    <?php echo htmlspecialchars($category['Name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </form>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
       <?php foreach ($articles as $article): ?>

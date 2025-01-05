@@ -106,19 +106,26 @@ class User {
             return [];
         }
     }
-    public function getApprovedArts() {
+    public function getApprovedArts($categoryID = null) {
         try {
             $query = "SELECT * FROM Articles WHERE status = 'Approved'";
+            if ($categoryID) {
+                $query .= " AND CatID = :categoryID";
+            }
             $stmt = $this->connection->prepare($query);
-            $stmt->execute();
-            $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            return $articles;
+    
+            if ($categoryID) {
+                $stmt->execute([':categoryID' => $categoryID]);
+            } else {
+                $stmt->execute();
+            }
+    
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
         }
-    }
+    }    
     public function getArts() {
         try {
             $query = "SELECT * FROM Articles";
