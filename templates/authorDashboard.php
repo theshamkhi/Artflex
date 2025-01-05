@@ -107,20 +107,16 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <section class="p-8 sm:ml-80">
   <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
-      <div class="lg:col-span-2 lg:py-12">
+      <div class="lg:col-span-2">
+        <h1 class="font-bold text-6xl text-pink-600 mb-8">Submit Your Article and Share Your Creative Insights</h1>
         <p class="max-w-xl text-lg">
           At the same time, the fact that we are wholly owned and totally independent from
           manufacturer and other group control gives you confidence that we will only recommend what
           is right for you.
         </p>
-
-        <div class="mt-8">
-          <a href="#" class="text-2xl font-bold text-pink-600"> 0151 475 4450 </a>
-          <address class="mt-2 not-italic">282 Kevin Brook, Imogeneborough, CA 58517</address>
-        </div>
       </div>
 
-      <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
+      <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
         <form method="POST" class="space-y-4">
           <div><input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Title" type="text" id="title" name="title"/></div>
           <div><input class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="Image URL" type="text" id="photo" name="photo"/></div>
@@ -137,7 +133,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="sr-only" for="content">Content</label>
             <textarea class="w-full rounded-lg border-gray-200 p-3 text-sm" placeholder="What are you thinking?" rows="8" id="content" name="content"></textarea>
           </div>
-          <div class="mt-4">
+          <div class="flex items-center justify-center mt-4">
             <button type="submit" class="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto">
               Save
             </button>
