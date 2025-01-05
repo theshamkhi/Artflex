@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
       <?php foreach ($categories as $category): ?>
-        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
             <div class="flex justify-between bg-white p-4 sm:p-6">
                 <a href="#">
                     <h3 class="mt-0.5 text-lg text-gray-900">
