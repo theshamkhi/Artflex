@@ -97,7 +97,11 @@ class User {
     }
     public function getAuthorArts() {
         try {
-            $query = "SELECT * FROM Articles WHERE AuthorID = :author_id";
+            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+                    FROM articles
+                    JOIN categories ON categories.CatID = articles.CatID
+                    JOIN users ON users.UserID = articles.AuthorID
+                    WHERE AuthorID = :author_id";
             $stmt = $this->connection->prepare($query);
             $stmt->execute([':author_id' => $this->userID]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
