@@ -109,7 +109,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
       <div class="lg:col-span-2">
         <h1 class="font-bold text-6xl text-pink-600 mb-8">Submit Your Article and Share Your Creative Insights</h1>
-        <p class="max-w-xl text-lg">
+        <p class="max-w-xl text-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
           At the same time, the fact that we are wholly owned and totally independent from
           manufacturer and other group control gives you confidence that we will only recommend what
           is right for you.
