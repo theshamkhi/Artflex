@@ -95,11 +95,13 @@ $articles = $user->getApprovedArts($selectedCategory);
                         <?php echo htmlspecialchars($article['Title']); ?>
                     </h3>
                 </a>
+                <hr class="mt-3">
                 <p class="mt-2 text-sm text-gray-500 break-words">
                     <?php echo htmlspecialchars($article['Content']); ?>
                 </p>
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-500">
-                    <?php echo htmlspecialchars($article['PubDate']); ?>
+                <hr class="mt-3">
+                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
+                    <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
                 </time>
             </div>
         </article>

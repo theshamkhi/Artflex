@@ -87,20 +87,22 @@ $articles = $user->getAuthorArts();
         <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
             <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
             <div class="bg-white p-4 sm:p-6">
-                <a href="#">
+                <div class="flex justify-between">
                     <h3 class="mt-0.5 text-lg text-gray-900">
                         <?php echo htmlspecialchars($article['Title']); ?>
                     </h3>
-                </a>
+                    <p class="mt-2 text-sm text-gray-600 italic">
+                      <?php echo htmlspecialchars($article['status']); ?>
+                    </p>
+                </div>
+                <hr class="mt-3">
                 <p class="mt-2 text-sm text-gray-500 break-words">
                     <?php echo htmlspecialchars($article['Content']); ?>
                 </p>
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-500">
-                    <?php echo htmlspecialchars($article['PubDate']); ?>
+                <hr class="mt-3">
+                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
+                    <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
                 </time>
-                <p class="mt-2 text-sm text-gray-600 italic">
-                  <?php echo htmlspecialchars($article['status']); ?>
-                </p>
             </div>
         </article>
       <?php endforeach; ?>

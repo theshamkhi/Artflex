@@ -112,9 +112,13 @@ class User {
     }
     public function getApprovedArts($categoryID = null) {
         try {
-            $query = "SELECT * FROM Articles WHERE status = 'Approved'";
+            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+                    FROM articles
+                    JOIN categories ON categories.CatID = articles.CatID
+                    JOIN users ON users.UserID = articles.AuthorID
+                    WHERE status = 'Approved'";
             if ($categoryID) {
-                $query .= " AND CatID = :categoryID";
+                $query .= " AND articles.CatID = :categoryID";
             }
             $stmt = $this->connection->prepare($query);
     
@@ -132,7 +136,10 @@ class User {
     }    
     public function getArts() {
         try {
-            $query = "SELECT * FROM Articles";
+            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+                    FROM articles
+                    JOIN categories ON categories.CatID = articles.CatID
+                    JOIN users ON users.UserID = articles.AuthorID";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
