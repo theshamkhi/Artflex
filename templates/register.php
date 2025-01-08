@@ -6,12 +6,13 @@ $new = new User();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
+    $photo = $_POST['photo'];
     $password = $_POST['password'];
     $name = $_POST['name'];
     $role = $_POST['role'];
 
     try {
-        $new->register($name, $username, $password, $role);
+        $new->register($name, $photo, $username, $password, $role);
         header('Location: login.php');
         exit();
     } catch (Exception $e) {
@@ -57,6 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="relative">
                         <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Name</p>
                         <input type="text" name="name" placeholder="Name" class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"/>
+                    </div>
+
+                    <!-- PhotoURL -->
+                    <div class="relative">
+                        <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Photo</p>
+                        <input type="text" name="photo" placeholder="Paste URL Here" class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"/>
                     </div>
 
                     <!-- Username -->

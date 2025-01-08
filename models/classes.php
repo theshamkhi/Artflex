@@ -14,16 +14,17 @@ class User {
         $this->connection = $db->getConnection();
     }
 
-    public function register($name, $username, $password, $role) {
+    public function register($name, $photo, $username, $password, $role) {
         try {
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-            $query = "INSERT INTO users (name, username, password, role) VALUES (:name, :username, :password, :role)";
+            $query = "INSERT INTO users (name, username, password, role, photoURL) VALUES (:name, :username, :password, :role, :photoURL)";
             $stmt = $this->connection->prepare($query);
             $stmt->execute([
                 ':name' => $name,
                 ':username' => $username,
                 ':password' => $hashedPassword,
-                ':role' => $role
+                ':role' => $role,
+                ':photoURL' => $photo
             ]);
             return true;
         } catch (PDOException $e) {

@@ -4,6 +4,7 @@ USE Artflex;
 CREATE TABLE Users (
     UserID INT PRIMARY KEY AUTO_INCREMENT,
     Name VARCHAR(255) NOT NULL,
+    PhotoURL VARCHAR(255) DEFAULT 'https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg',
     Username VARCHAR(100) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL,
     Role ENUM('Admin', 'Author', 'Reader') NOT NULL
