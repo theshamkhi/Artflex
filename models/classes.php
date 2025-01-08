@@ -160,6 +160,22 @@ class User {
             ':cat_id' => $catID,
         ]);
     }
+    public function updateUser($name, $photo, $userID){
+        $query = "UPDATE Users SET Name = :name, PhotoURL = :photoURL WHERE UserID = :userID";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([
+            ':name' => $name,
+            ':photoURL' => $photo,
+            ':userID' => $userID
+        ]);
+    }
+    public function getUserData(){
+        $userID = $_SESSION['user_id'];
+        $query = "SELECT * FROM Users WHERE UserID = :userID";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':userID' => $userID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     public function addCat($name) {
         try {
             $query = "INSERT INTO Categories (Name) 
