@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_id'], $_POST['act
 <div class="flex-1 ml-0 sm:ml-80 p-8">
     <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" style="align-items: start;">
+    <div class="grid grid-cols-1 sm:px-12 lg:px-24 gap-8" style="align-items: start;">
       <?php foreach ($articles as $article): ?>
         <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
             <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
