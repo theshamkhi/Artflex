@@ -28,6 +28,22 @@ CREATE TABLE Articles (
     FOREIGN KEY (CatID) REFERENCES Categories(CatID)
 );
 
+CREATE TABLE Comments (
+    CommentID INT AUTO_INCREMENT PRIMARY KEY,
+    CommentText TEXT NOT NULL
+    ArtID INT NOT NULL,
+    UserID INT NOT NULL,
+    FOREIGN KEY (ArtID) REFERENCES Articles(ArtID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Likes (
+    LikeID INT AUTO_INCREMENT PRIMARY KEY,
+    ArtID INT NOT NULL,
+    UserID INT NOT NULL,
+    FOREIGN KEY (ArtID) REFERENCES Articles(ArtID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
 
 -- Insert example data into Users
 INSERT INTO Users (Name, Username, Password, Role)
