@@ -160,7 +160,8 @@ class User {
             ':cat_id' => $catID,
         ]);
     }
-    public function updateUser($name, $photo, $userID){
+    public function updateUserData($name, $photo){
+        $userID = $_SESSION['user_id'];
         $query = "UPDATE Users SET Name = :name, PhotoURL = :photoURL WHERE UserID = :userID";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
