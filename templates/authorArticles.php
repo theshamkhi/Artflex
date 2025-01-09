@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $user = new User();
 $user->setUserID($_SESSION['user_id']);
 
+$theuser = $user->getUserData();
+
 $articles = $user->getAuthorArts();
 ?>
 <!DOCTYPE html>
@@ -40,13 +42,15 @@ $articles = $user->getAuthorArts();
 <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-80 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
     <div class="h-full overflow-y-auto bg-black">
     <!-- Sidebar Menu -->
-    <div class="flex flex-col">
-        <img src="../assets/theatre.jpg" alt="Cover" class="object-cover">
-        <div class="px-3 py-4">
-            <h2 class="text-3xl font-semibold text-center text-white mb-6">Artflex</h2>
-            <hr class="h-1 bg-white border-0 rounded dark:bg-gray-400">
+    <?php if ($theuser): ?>
+        <div class="flex flex-col space-y-2">
+            <img src="<?php echo $theuser['PhotoURL']; ?>" alt="Lawyer Photo" class="object-cover">
+            <div class="px-3 pt-4">
+                <h2 class="text-xl font-semibold text-white text-center uppercase mb-4"><?php echo $theuser['Name']; ?></h2>
+                <!-- <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p> -->
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
         <ul class="space-y-2 font-medium px-3 pb-4">
             <li>
                 <a href="authorDashboard.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
@@ -55,6 +59,14 @@ $articles = $user->getAuthorArts();
                         <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
                 <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="userProfile.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                      <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+                    </svg>
+                <span class="ms-3">Profile</span>
                 </a>
             </li>
             <li>
