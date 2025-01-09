@@ -71,6 +71,15 @@ class User {
     public function setUserID($id) {
         $this->userID = (int)$id;
     }
+    public function getArtByID($artID) {
+        $query = "SELECT * FROM articles WHERE ArtID = :artID";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([
+            ':artID' => $artID,
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
 
     public function createArt($title, $photoURL, $content, $category) {
         try {
@@ -96,6 +105,50 @@ class User {
             return "Failed to create article: " . $e->getMessage();
         }
     }
+    public function deleteArt($artID) {
+        try {
+            $query = "DELETE FROM Articles WHERE ArtID = :artID AND AuthorID = :authorID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':artID' => $artID,
+                ':authorID' => $this->userID
+            ]);
+    
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    public function updateArt($artID, $title, $content, $photoURL) {
+        try {
+            $query = "UPDATE Articles 
+                      SET Title = :title, Content = :content, PhotoURL = :photoURL 
+                      WHERE ArtID = :artID AND AuthorID = :authorID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':title' => $title,
+                ':content' => $content,
+                ':photoURL' => $photoURL,
+                ':artID' => $artID,
+                ':authorID' => $this->userID
+            ]);
+    
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
     public function getAuthorArts() {
         try {
             $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName

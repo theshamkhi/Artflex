@@ -96,26 +96,57 @@ $articles = $user->getAuthorArts();
     <h2 class="text-5xl font-semibold text-black mb-10">My Articles</h2>
     <div class="grid grid-cols-1 sm:px-12 lg:px-24 gap-8" style="align-items: start;">
       <?php foreach ($articles as $article): ?>
-        <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
-            <div class="bg-white p-4 sm:p-6">
-                <div class="flex justify-between">
-                    <h3 class="mt-0.5 text-lg text-gray-900">
-                        <?php echo htmlspecialchars($article['Title']); ?>
-                    </h3>
-                    <p class="mt-2 text-sm text-gray-600 italic">
-                      <?php echo htmlspecialchars($article['status']); ?>
-                    </p>
-                </div>
-                <hr class="mt-3">
-                <p class="mt-2 text-sm text-gray-500 break-words">
-                    <?php echo htmlspecialchars($article['Content']); ?>
-                </p>
-                <hr class="mt-3">
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
-                    <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
-                </time>
-            </div>
+        <article class="overflow-hidden shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+          <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
+          <div class="bg-white p-4 sm:p-6">
+              <a href="#">
+                  <h3 class="mt-0.5 text-lg text-gray-900">
+                      <?php echo htmlspecialchars($article['Title']); ?>
+                  </h3>
+              </a>
+              <hr class="mt-3">
+              <p class="mt-2 text-sm text-gray-500 break-words">
+                  <?php echo htmlspecialchars($article['Content']); ?>
+              </p>
+              <hr class="mt-3">
+              <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
+                  <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
+              </time>
+              
+              <div class="mt-4 flex items-center justify-between">
+                  <form method="POST">
+                      <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
+                      <div class="flex items-center gap-3">
+                          <span><?php echo $user->getLikeCount($article['ArtID']); ?></span>
+                          <button type="submit" class="like-btn">
+                              <?php
+                              $liked = $user->hasLiked($article['ArtID']);
+                              echo $liked ? 'Unlike' : 'Like';
+                              ?>
+                          </button>
+                      </div>
+                  </form>
+                  
+                  <!-- Edit and Delete buttons (only visible to the author) -->
+                  <?php if ($user->getUserID() === $article['AuthorID']) { ?>
+                      <div class="flex gap-2">
+                          <!-- Edit Button -->
+                          <a href="editArticle.php?artID=<?php echo $article['ArtID']; ?>" 
+                            class="text-blue-600 hover:underline">
+                              Edit
+                          </a>
+                          
+                          <!-- Delete Button -->
+                          <form method="POST" action="delete_article.php" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                              <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
+                              <button type="submit" class="text-red-600 hover:underline">
+                                  Delete
+                              </button>
+                          </form>
+                      </div>
+                  <?php } ?>
+              </div>
+          </div>
         </article>
       <?php endforeach; ?>
     </div>
