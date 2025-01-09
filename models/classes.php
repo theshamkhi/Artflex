@@ -111,9 +111,9 @@ class User {
             return [];
         }
     }
-    public function getApprovedArts($categoryID = null) {
+    public function getByCat($categoryID = null) {
         try {
-            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+            $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
                     FROM articles
                     JOIN categories ON categories.CatID = articles.CatID
                     JOIN users ON users.UserID = articles.AuthorID
@@ -134,7 +134,18 @@ class User {
             error_log($e->getMessage());
             return [];
         }
-    }    
+    }
+    public function getBySearch($searchTerm) {
+        $sql = "
+        SELECT * FROM Articles
+        WHERE (Title LIKE :searchTerm OR Content LIKE :searchTerm)
+        AND status = 'Approved'
+        ORDER BY PubDate DESC
+        ";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':searchTerm' => "%$searchTerm%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } 
     public function getArts() {
         try {
             $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
