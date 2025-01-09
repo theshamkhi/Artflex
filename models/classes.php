@@ -136,16 +136,14 @@ class User {
         }
     }
     public function getBySearch($searchTerm) {
-        $sql = "
-        SELECT * FROM Articles
-        WHERE (Title LIKE :searchTerm OR Content LIKE :searchTerm)
-        AND status = 'Approved'
-        ORDER BY PubDate DESC
-        ";
+        $sql = "SELECT * FROM Articles
+                WHERE (Title LIKE :searchTerm OR Content LIKE :searchTerm)
+                AND status = 'Approved'
+                ORDER BY PubDate DESC";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':searchTerm' => "%$searchTerm%"]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } 
+    }
     public function getArts() {
         try {
             $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
@@ -229,6 +227,55 @@ class User {
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
+    public function toggleLike($artID) {
+        try {
+            $query = "SELECT * FROM Likes WHERE ArtID = :artID AND UserID = :userID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([':artID' => $artID, ':userID' => $this->userID]);
+            $like = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($like) {
+                // Unlike if already liked
+                $query = "DELETE FROM Likes WHERE LikeID = :likeID";
+                $stmt = $this->connection->prepare($query);
+                $stmt->execute([':likeID' => $like['LikeID']]);
+                return "unliked";
+            } else {
+                // Like the article
+                $query = "INSERT INTO Likes (ArtID, UserID) VALUES (:artID, :userID)";
+                $stmt = $this->connection->prepare($query);
+                $stmt->execute([':artID' => $artID, ':userID' => $this->userID]);
+                return "liked";
+            }
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
+    public function hasLiked($artID) {
+        try {
+            $query = "SELECT * FROM Likes WHERE ArtID = :artID AND UserID = :userID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([':artID' => $artID, ':userID' => $this->userID]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    public function getLikeCount($artID) {
+        try {
+            $query = "SELECT COUNT(*) AS likeCount FROM Likes WHERE ArtID = :artID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([':artID' => $artID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['likeCount'];
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return 0;
+        }
+    }    
     
 }
 

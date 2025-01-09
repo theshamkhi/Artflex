@@ -21,6 +21,15 @@ $articles = $user->getByCat($selectedCategory);
 
 $searchTerm = $_GET['search'] ?? '';
 $searchedArticles = $user->getBySearch($searchTerm);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $artID = intval($_POST['artID']);
+  $result = $user->toggleLike($artID);
+
+  // Redirect back to the previous page
+  header("Location: " . $_SERVER['HTTP_REFERER']);
+  exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,6 +99,10 @@ $searchedArticles = $user->getBySearch($searchTerm);
    </div>
 </aside>
 
+<?php
+
+?>
+
 <!-- Main -->
 <div class="flex-1 ml-0 sm:ml-80 p-8">
     <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
@@ -129,47 +142,19 @@ $searchedArticles = $user->getBySearch($searchTerm);
                 <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
                     <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
                 </time>
-                <div class="flex justify-start">
-                  <!-- Like -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-pink-500 hover:text-pink-700 cursor-pointer">
-                    <path fill-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" clip-rule="evenodd"/>
-                  </svg>
-
-                  <!-- Dislike -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-gray-500 hover:text-gray-700 cursor-pointer">
-                    <path fill-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-            </div>
-        </article>
-      <?php endforeach; ?>
-      <?php foreach ($searchedArticles as $article): ?>
-        <article class="overflow-hidden shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            <img src="<?php echo htmlspecialchars($article['PhotoURL']); ?>" alt="Article Image" class="h-56 w-full object-cover"/>
-            <div class="bg-white p-4 sm:p-6">
-                <a href="#">
-                    <h3 class="mt-0.5 text-lg text-gray-900">
-                        <?php echo htmlspecialchars($article['Title']); ?>
-                    </h3>
-                </a>
-                <hr class="mt-3">
-                <p class="mt-2 text-sm text-gray-500 break-words">
-                    <?php echo htmlspecialchars($article['Content']); ?>
-                </p>
-                <hr class="mt-3">
-                <time datetime="<?php echo htmlspecialchars($article['PubDate']); ?>" class="block mt-2 text-xs text-gray-600 italic">
-                    <?php echo "<strong>Created by </strong>" . htmlspecialchars($article['AuthorName']) . "<br><strong>On </strong>" . htmlspecialchars($article['PubDate']); ?>
-                </time>
-                <div class="flex justify-start">
-                  <!-- Like -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-pink-500 hover:text-pink-700 cursor-pointer">
-                    <path fill-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" clip-rule="evenodd"/>
-                  </svg>
-
-                  <!-- Dislike -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-gray-500 hover:text-gray-700 cursor-pointer">
-                    <path fill-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" clip-rule="evenodd"/>
-                  </svg>
+                <div class="mt-4 flex items-center">
+                    <form method="POST">
+                        <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
+                        <div class="mt-4 flex justify-start gap-3">
+                            <span><?php echo $user->getLikeCount($article['ArtID']); ?></span>
+                            <button type="submit" class="like-btn">
+                                <?php
+                                $liked = $user->hasLiked($article['ArtID']);
+                                echo $liked ? 'Unlike' : 'Like';
+                                ?>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </article>
