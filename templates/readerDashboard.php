@@ -10,17 +10,26 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 }
 
 $user = new User();
+
 $user->setUserID($_SESSION['user_id']);
 
 $theuser = $user->getUserData();
 
 $categories = $user->getCats();
-$selectedCategory = isset($_GET['category']) ? (int)$_GET['category'] : null;
-$articles = $user->getByCat($selectedCategory);
 
+$selectedCategory = $_GET['category'] ?? null;
+$searchTerm = $_GET['search'] ?? null;
 
-$searchTerm = $_GET['search'] ?? '';
-$searchedArticles = $user->getBySearch($searchTerm);
+if ($selectedCategory && $searchTerm) {
+    $articles = $user->getByCategoryAndSearch($selectedCategory, $searchTerm);
+} elseif ($selectedCategory) {
+    $articles = $user->getByCat($selectedCategory);
+} elseif ($searchTerm) {
+    $articles = $user->getBySearch($searchTerm);
+} else {
+    $articles = $user->getAllArticles();
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['action']) && $_POST['action'] === 'toggleLike') {

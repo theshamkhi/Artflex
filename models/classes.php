@@ -167,13 +167,14 @@ class User {
     public function getByCat($categoryID = null) {
         try {
             $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
-                    FROM articles
-                    JOIN categories ON categories.CatID = articles.CatID
-                    JOIN users ON users.UserID = articles.AuthorID
-                    WHERE status = 'Approved'";
+                      FROM articles
+                      JOIN categories ON categories.CatID = articles.CatID
+                      JOIN users ON users.UserID = articles.AuthorID
+                      WHERE status = 'Approved'";
             if ($categoryID) {
                 $query .= " AND articles.CatID = :categoryID";
             }
+            $query .= " ORDER BY PubDate DESC";
             $stmt = $this->connection->prepare($query);
     
             if ($categoryID) {
@@ -188,18 +189,72 @@ class User {
             return [];
         }
     }
+    
     public function getBySearch($searchTerm) {
-        $sql = "SELECT * FROM Articles
-                WHERE (Title LIKE :searchTerm OR Content LIKE :searchTerm)
-                AND status = 'Approved'
-                ORDER BY PubDate DESC";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute([':searchTerm' => "%$searchTerm%"]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
+                    FROM articles
+                    JOIN categories ON categories.CatID = articles.CatID
+                    JOIN users ON users.UserID = articles.AuthorID
+                    WHERE (articles.Title LIKE :searchTerm OR articles.Content LIKE :searchTerm)
+                    AND status = 'Approved'
+                    ORDER BY PubDate DESC";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':searchTerm' => "%$searchTerm%"]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
     }
+    
+    public function getByCategoryAndSearch($categoryID = null, $searchTerm = null) {
+        try {
+            $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
+                      FROM articles
+                      JOIN categories ON categories.CatID = articles.CatID
+                      JOIN users ON users.UserID = articles.AuthorID
+                      WHERE status = 'Approved'";
+            
+            $params = [];
+            if ($categoryID) {
+                $query .= " AND articles.CatID = :categoryID";
+                $params[':categoryID'] = $categoryID;
+            }
+            if ($searchTerm) {
+                $query .= " AND (articles.Title LIKE :searchTerm OR articles.Content LIKE :searchTerm)";
+                $params[':searchTerm'] = "%$searchTerm%";
+            }
+            $query .= " ORDER BY PubDate DESC";
+    
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+    
+    public function getAllArticles() {
+        try {
+            $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
+                      FROM articles
+                      JOIN categories ON categories.CatID = articles.CatID
+                      JOIN users ON users.UserID = articles.AuthorID
+                      WHERE status = 'Approved'
+                      ORDER BY PubDate DESC";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }    
     public function getArts() {
         try {
-            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+            $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
                     FROM articles
                     JOIN categories ON categories.CatID = articles.CatID
                     JOIN users ON users.UserID = articles.AuthorID";
