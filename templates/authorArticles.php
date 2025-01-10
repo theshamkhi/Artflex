@@ -14,6 +14,24 @@ $user->setUserID($_SESSION['user_id']);
 $theuser = $user->getUserData();
 
 $articles = $user->getAuthorArts();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST['action']) && $_POST['action'] === 'toggleLike') {
+      $artID = intval($_POST['artID']);
+      $result = $user->toggleLike($artID);
+
+      header("Location: " . $_SERVER['HTTP_REFERER']);
+      exit;
+  }
+
+  if (isset($_POST['action']) && $_POST['action'] === 'deleteArt') {
+      $artID = $_POST['artID'];
+      $user->deleteArt($artID);
+
+      header("Location: readerDashboard.php");
+      exit;
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -114,7 +132,9 @@ $articles = $user->getAuthorArts();
               </time>
               
               <div class="mt-4 flex items-center justify-between">
+                  <!-- Like Form -->
                   <form method="POST">
+                      <input type="hidden" name="action" value="toggleLike">
                       <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
                       <div class="flex items-center gap-3">
                           <span><?php echo $user->getLikeCount($article['ArtID']); ?></span>
@@ -127,17 +147,15 @@ $articles = $user->getAuthorArts();
                       </div>
                   </form>
                   
-                  <!-- Edit and Delete buttons (only visible to the author) -->
                   <?php if ($user->getUserID() === $article['AuthorID']) { ?>
                       <div class="flex gap-2">
-                          <!-- Edit Button -->
                           <a href="editArticle.php?artID=<?php echo $article['ArtID']; ?>" 
                             class="text-blue-600 hover:underline">
                               Edit
                           </a>
-                          
-                          <!-- Delete Button -->
-                          <form method="POST" action="delete_article.php" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                          <!-- Delete Form -->
+                          <form method="POST" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                              <input type="hidden" name="action" value="deleteArt">
                               <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
                               <button type="submit" class="text-red-600 hover:underline">
                                   Delete
