@@ -1,6 +1,9 @@
 <?php
 require_once '../config/db.php';
-require_once '../models/classes.php';
+require_once '../models/user.php';
+require_once '../models/author.php';
+require_once '../models/admin.php';
+require_once '../models/reader.php';
 
 session_start();
 
@@ -9,7 +12,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
     exit;
 }
 
-$user = new User();
+$user = new Reader();
 
 $user->setUserID($_SESSION['user_id']);
 
@@ -37,14 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $result = $user->toggleLike($artID);
 
       header("Location: " . $_SERVER['HTTP_REFERER']);
-      exit;
-  }
-
-  if (isset($_POST['action']) && $_POST['action'] === 'deleteArt') {
-      $artID = $_POST['artID'];
-      $user->deleteArt($artID);
-
-      header("Location: readerDashboard.php");
       exit;
   }
 }
@@ -84,11 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="<?php echo $theuser['PhotoURL']; ?>" alt="Lawyer Photo" class="object-cover">
             <div class="px-3 pt-4">
                 <h2 class="text-xl font-semibold text-white text-center uppercase mb-4"><?php echo $theuser['Name']; ?></h2>
-                <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p>
             </div>
         </div>
     <?php endif; ?>
-        <ul class="space-y-2 font-medium px-3 pb-4">
+    <ul class="space-y-2 font-medium px-3 pb-4">
             <li>
                 <a href="readerDashboard.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
                     <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -106,12 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </a>
             </li>
             <li>
-                <a href="userFav.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
-                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                      <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
-                    </svg>
-                <span class="ms-3">Favorites</span>
-                </a>
+              <a href="userFav.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 20">
+                      <path d="M7.958 19.393a7.7 7.7 0 0 1-6.715-3.439c-2.868-4.832 0-9.376.944-10.654l.091-.122a3.286 3.286 0 0 0 .765-3.288A1 1 0 0 1 4.6.8c.133.1.313.212.525.347A10.451 10.451 0 0 1 10.6 9.3c.5-1.06.772-2.213.8-3.385a1 1 0 0 1 1.592-.758c1.636 1.205 4.638 6.081 2.019 10.441a8.177 8.177 0 0 1-7.053 3.795Z"/>
+                  </svg>
+              <span class="ms-3">Favorites</span>
+              </a>
             </li>
             <li>
                 <a href="logout.php" class="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black group">
@@ -125,14 +119,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    </div>
 </aside>
 
-<?php
-
-?>
 
 <!-- Main -->
 <div class="flex-1 ml-0 sm:ml-80 p-8">
-    <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
-    <div class="flex justify-between sm:px-12 lg:px-24 mb-8">
+    <div class="flex justify-between sm:px-12 lg:px-24 my-16">
       <form method="GET" action="" class="flex items-center space-x-4">
           <select id="category" name="category" onchange="this.form.submit()" class="block w-full max-w-sm px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
               <option value="" class="text-gray-500">All Categories</option>
@@ -184,23 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           </button>
                       </div>
                   </form>
-                  
-                  <?php if ($user->getUserID() === $article['AuthorID']) { ?>
-                      <div class="flex gap-2">
-                          <a href="editArticle.php?artID=<?php echo $article['ArtID']; ?>" 
-                            class="text-blue-600 hover:underline">
-                              Edit
-                          </a>
-                          <!-- Delete Form -->
-                          <form method="POST" onsubmit="return confirm('Are you sure you want to delete this article?');">
-                              <input type="hidden" name="action" value="deleteArt">
-                              <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
-                              <button type="submit" class="text-red-600 hover:underline">
-                                  Delete
-                              </button>
-                          </form>
-                      </div>
-                  <?php } ?>
               </div>
           </div>
         </article>

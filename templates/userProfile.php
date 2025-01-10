@@ -1,6 +1,9 @@
 <?php
 require_once '../config/db.php';
-require_once '../models/classes.php';
+require_once '../models/user.php';
+require_once '../models/author.php';
+require_once '../models/admin.php';
+require_once '../models/reader.php';
 
 session_start();
 
@@ -8,7 +11,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
     header("Location: login.php");
     exit;
 }
-$theuser = new User();
+$theuser = new Author();
 $theuser->setUserID($_SESSION['user_id']);
 
 $user = $theuser->getUserData();
@@ -60,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="<?php echo $user['PhotoURL']; ?>" alt="Lawyer Photo" class="object-cover">
             <div class="px-3 pt-4">
                 <h2 class="text-xl font-semibold text-white text-center uppercase mb-4"><?php echo $user['Name']; ?></h2>
-                <!-- <p class="text-base text-gray-400">&#128231;  <?php echo $user['Email']; ?></p> -->
             </div>
         </div>
     <?php endif; ?>

@@ -1,5 +1,8 @@
 <?php
-require_once '../models/classes.php';
+require_once '../models/user.php';
+require_once '../models/author.php';
+require_once '../models/admin.php';
+require_once '../models/reader.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     session_start();

@@ -1,6 +1,9 @@
 <?php
 require_once '../config/db.php';
-require_once '../models/classes.php';
+require_once '../models/user.php';
+require_once '../models/author.php';
+require_once '../models/admin.php';
+require_once '../models/reader.php';
 
 session_start();
 
@@ -8,7 +11,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
     header("Location: login.php");
     exit;
 }
-$user = new User();
+$user = new Author();
 $user->setUserID($_SESSION['user_id']);
 
 $theuser = $user->getUserData();

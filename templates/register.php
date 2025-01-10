@@ -1,8 +1,11 @@
 <?php
-require_once '../models/classes.php';
+require_once '../models/user.php';
+require_once '../models/author.php';
+require_once '../models/admin.php';
+require_once '../models/reader.php';
 require_once '../config/db.php';
 
-$new = new User();
+$new = new Reader();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
