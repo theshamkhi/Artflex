@@ -372,6 +372,20 @@ class User {
             return false;
         }
     }
+    public function getFavoris() {
+        try {
+            $query = "SELECT articles.* 
+                      FROM Likes
+                      JOIN articles ON articles.ArtID = Likes.ArtID
+                      WHERE Likes.UserID = :userID";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([':userID' => $this->userID]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }    
     public function getLikeCount($artID) {
         try {
             $query = "SELECT COUNT(*) AS likeCount FROM Likes WHERE ArtID = :artID";
