@@ -107,19 +107,24 @@ class User {
     }
     public function deleteArt($artID) {
         try {
-            $query = "DELETE FROM Articles WHERE ArtID = :artID AND AuthorID = :authorID";
-            $stmt = $this->connection->prepare($query);
-            $stmt->execute([
+            $this->connection->beginTransaction();
+    
+            $queryLikes = "DELETE FROM likes WHERE ArtID = :artID";
+            $stmtLikes = $this->connection->prepare($queryLikes);
+            $stmtLikes->execute([':artID' => $artID]);
+    
+            $queryArticles = "DELETE FROM Articles WHERE ArtID = :artID AND AuthorID = :authorID";
+            $stmtArticles = $this->connection->prepare($queryArticles);
+            $stmtArticles->execute([
                 ':artID' => $artID,
                 ':authorID' => $this->userID
             ]);
     
-            if ($stmt->rowCount() > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            $this->connection->commit();
+    
+            return $stmtArticles->rowCount() > 0;
         } catch (PDOException $e) {
+            $this->connection->rollBack();
             error_log($e->getMessage());
             return false;
         }
