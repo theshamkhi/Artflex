@@ -151,7 +151,7 @@ class User {
     
     public function getAuthorArts() {
         try {
-            $query = "SELECT categories.Name AS CatName, articles.ArtID, articles.AuthorID, articles.CatID, articles.PhotoURL, articles.Title, articles.Content, articles.PubDate, articles.status, users.Name AS AuthorName
+            $query = "SELECT categories.Name AS CatName, articles.*, users.Name AS AuthorName
                     FROM articles
                     JOIN categories ON categories.CatID = articles.CatID
                     JOIN users ON users.UserID = articles.AuthorID
@@ -374,10 +374,11 @@ class User {
     }
     public function getFavoris() {
         try {
-            $query = "SELECT articles.* 
-                      FROM Likes
-                      JOIN articles ON articles.ArtID = Likes.ArtID
-                      WHERE Likes.UserID = :userID";
+            $query = "SELECT articles.*, users.Name AS AuthorName
+                        FROM Likes
+                        JOIN articles ON articles.ArtID = Likes.ArtID
+                        JOIN users ON users.UserID = Likes.UserID
+                        WHERE Likes.UserID = :userID";
             $stmt = $this->connection->prepare($query);
             $stmt->execute([':userID' => $this->userID]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
