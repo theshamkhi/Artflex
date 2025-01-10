@@ -87,10 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_id'], $_POST['act
    </div>
 </aside>
 
-<!-- Main -->
-<div class="flex-1 ml-0 sm:ml-80 p-8">
-    <h1 class="text-5xl font-semibold text-black mb-10">Dashboard</h1>
 
+<div class="mx-auto max-w-screen-xl px-4 py-16 ml-0 sm:ml-80 p-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-lg text-center">
+    <h1 class="text-3xl font-bold sm:text-6xl">Articles</h1>
+
+    <p class="mt-4 text-gray-500">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Et libero nulla eaque error neque
+      ipsa culpa autem, at itaque nostrum!
+    </p>
+  </div>
+</div>
+
+<div class="flex-1 ml-0 sm:ml-80 p-8">
     <div class="grid grid-cols-1 sm:px-12 lg:px-24 gap-8" style="align-items: start;">
       <?php foreach ($articles as $article): ?>
         <article class="overflow-hidden rounded-lg shadow transition hover:shadow-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom">

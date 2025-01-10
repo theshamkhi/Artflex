@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 <div class="mx-auto max-w-screen-xl px-4 py-16 ml-0 sm:ml-80 p-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-lg text-center">
-    <h1 class="text-2xl font-bold sm:text-3xl">Add New Category!</h1>
+    <h1 class="text-3xl font-bold sm:text-4xl">Add New Category!</h1>
 
     <p class="mt-4 text-gray-500">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Et libero nulla eaque error neque
