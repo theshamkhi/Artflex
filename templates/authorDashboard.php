@@ -72,7 +72,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <img src="<?php echo $theuser['PhotoURL']; ?>" alt="Lawyer Photo" class="object-cover">
             <div class="px-3 pt-4">
                 <h2 class="text-xl font-semibold text-white text-center uppercase mb-4"><?php echo $theuser['Name']; ?></h2>
-                <!-- <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p> -->
+                <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p>
             </div>
         </div>
     <?php endif; ?>

@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="<?php echo $theuser['PhotoURL']; ?>" alt="Lawyer Photo" class="object-cover">
             <div class="px-3 pt-4">
                 <h2 class="text-xl font-semibold text-white text-center uppercase mb-4"><?php echo $theuser['Name']; ?></h2>
-                <!-- <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p> -->
+                <p class="text-base text-gray-400">&#128231;  <?php echo $theuser['Email']; ?></p>
             </div>
         </div>
     <?php endif; ?>
@@ -148,20 +148,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </form>
                   
                   <?php if ($user->getUserID() === $article['AuthorID']) { ?>
-                      <div class="flex gap-2">
-                          <a href="editArticle.php?artID=<?php echo $article['ArtID']; ?>" 
-                            class="text-blue-600 hover:underline">
-                              Edit
-                          </a>
-                          <!-- Delete Form -->
-                          <form method="POST" onsubmit="return confirm('Are you sure you want to delete this article?');">
-                              <input type="hidden" name="action" value="deleteArt">
-                              <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
-                              <button type="submit" class="text-red-600 hover:underline">
-                                  Delete
-                              </button>
-                          </form>
-                      </div>
+                      <!-- Delete Form -->
+                      <form method="POST" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                          <input type="hidden" name="action" value="deleteArt">
+                          <input type="hidden" name="artID" value="<?php echo $article['ArtID']; ?>">
+                          <button type="submit" class="text-red-600 hover:underline">
+                              Delete
+                          </button>
+                      </form>
                   <?php } ?>
               </div>
           </div>
